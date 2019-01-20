@@ -6,10 +6,8 @@ import faClock from '@fortawesome/fontawesome-free-solid/faClock';
 import faEnvelope from '@fortawesome/fontawesome-free-solid/faEnvelope';
 
 
-
-const Footer = ({data}) => {
+const Footer = () => {
     return (
-        data.siteData ?
         <footer className="bck_b_dark">
             <div className="container">
                 <div className="logo">
@@ -26,7 +24,7 @@ const Footer = ({data}) => {
                                 />
                                 <div className="nfo">
                                     <div>Address</div>
-                                    <div>{data.siteData[0].address}</div>
+                                    <div>Kramer 2345</div>
                                 </div>
                             </div>
                             <div className="tag">
@@ -36,7 +34,7 @@ const Footer = ({data}) => {
                                 />
                                 <div className="nfo">
                                     <div>Phone</div>
-                                    <div>{data.siteData[0].phone}</div>
+                                    <div>2345-22222</div>
                                 </div>
                             </div>
                             <div className="tag">
@@ -46,7 +44,7 @@ const Footer = ({data}) => {
                                 />
                                 <div className="nfo">
                                     <div>Working hours</div>
-                                    <div>{data.siteData[0].hours}</div>
+                                    <div>Mon-Sun/ 9am-8pm</div>
                                 </div>
                             </div>
                             <div className="tag">
@@ -56,7 +54,7 @@ const Footer = ({data}) => {
                                 />
                                 <div className="nfo">
                                     <div>Email</div>
-                                    <div>{data.siteData[0].email}</div>
+                                    <div>nfo@waves.com</div>
                                 </div>
                             </div>
                         </div>
@@ -72,7 +70,6 @@ const Footer = ({data}) => {
                 </div>
             </div>
         </footer>
-        :null
     );
 };
 

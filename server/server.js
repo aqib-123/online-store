@@ -5,6 +5,7 @@ const formidable = require('express-formidable');
 const cloudinary = require('cloudinary');
 const SHA1 = require("crypto-js/sha1"); 
 const multer = require('multer');
+const moment = require("moment");
 const fs = require('fs');
 const path = require('path');
 
@@ -13,8 +14,14 @@ const mongoose = require('mongoose');
 const async = require('async');
 require('dotenv').config();
 
-mongoose.Promise = global.Promise;
-mongoose.connect(process.env.MONGODB_URI)
+// DB Config
+const db = require('./config/keys').mongoURI;
+
+// Connect to MongoDB
+mongoose
+  .connect(db)
+  .then(() => console.log('MongoDB Connected'))
+  .catch(err => console.log(err));
 
 app.use(bodyParser.urlencoded({extended:true}));
 app.use(bodyParser.json());
@@ -243,6 +250,46 @@ app.get('/api/product/brands',(req,res)=>{
 //              USERS
 //=================================
 
+app.post('/api/users/reset_user',(req,res)=>{
+    User.findOne(
+        {'email':req.body.email},
+        (err,user)=>{
+            user.generateResetToken((err,user)=>{
+                if(err) return res.json({success:false,err});
+                sendEmail(user.email,user.name,null,"reset_password",user)
+                return res.json({success:true})
+            })
+        }
+    )
+})
+
+
+app.post('/api/users/reset_password',(req,res)=>{
+
+    var today = moment().startOf('day').valueOf();
+
+    User.findOne({
+        resetToken: req.body.resetToken,
+        resetTokenExp:{
+            $gte: today
+        }
+    },(err,user)=>{
+        if(!user) return res.json({success:false,message:'Sorry, token bad, generate a new one.'})
+    
+        user.password = req.body.password;
+        user.resetToken = '';
+        user.resetTokenExp= '';
+
+        user.save((err,doc)=>{
+            if(err) return res.json({success:false,err});
+            return res.status(200).json({
+                success: true
+            })
+        })
+    })
+})
+
+
 app.get('/api/users/auth',auth,(req,res)=>{
         res.status(200).json({
             isAdmin: req.user.role === 0 ? false : true,
@@ -278,8 +325,9 @@ app.post('/api/users/login',(req,res)=>{
             user.generateToken((err,user)=>{
                 if(err) return res.status(400).send(err);
                 res.cookie('w_auth',user.token).status(200).json({
-                    loginSuccess: true
+                    loginSuccess: true,
                 })
+                
             })
         })
     })
