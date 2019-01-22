@@ -1,18 +1,30 @@
-import React from 'react';
+import React, { Component } from 'react';
 import UserLayout from '../../hoc/user';
 import MyButton from '../utils/button';
 
-const UserDashboard = () => {
-    return (
-        <UserLayout>
+class UserDashboard extends Component {
+    
+
+        componentWillReceiveProps(){
+            console.log('componentWillReceiveProps');
+        }
+    
+    componentWillUnmount(){
+        console.log('unmount');
+    }
+
+    render() {
+        return (
+            <UserLayout>
             <div>
                 
                 <div className="user_nfo_panel">
                     <h1>User information</h1>
                     <div>
-                        <span>name</span>
-                        <span>lastname</span>
-                        <span>email</span>
+                        <span>{this.props.user.userData.name}</span> 
+                        <span>{this.props.user.userData.lastname}</span> 
+                        <span>{this.props.user.userData.email}</span> 
+                 
                     </div>
                     <MyButton
                         type="default"
@@ -30,8 +42,8 @@ const UserDashboard = () => {
                 
             </div>
         </UserLayout>
-        
-    );
-};
+        );
+    }
+}
 
 export default UserDashboard;
